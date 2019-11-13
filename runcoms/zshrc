@@ -11,3 +11,173 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+
+#
+# To fix the ^M (return/enter key press problem) in zsh
+#
+
+ttyctl -f
+
+# 10 second wait if you do something that will delete everything
+setopt RM_STAR_WAIT
+
+#
+# Disable creation of '__pycache__' folder
+#
+
+export PYTHONDONTWRITEBYTECODE=1
+
+#
+# Require an active virtualenv for pip
+#
+
+# Can be overridden by using 'gpip' function to install things globally
+export PIP_REQUIRE_VIRTUALENV=true
+
+#
+# ZLIB & SQLITE & 
+# LIBFFI (needed for PyCairo which is needed for BeeWare)
+#
+
+# Separate multiple entries with SPACE
+# For compilers to find zlib we need to set
+export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/sqlite/lib -L/usr/local/opt/libffi/lib"
+export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite/include"
+
+# Separtate multiple entries with COLON
+# For pkg-config to find zlib you may need to set:
+export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig:/usr/local/opt/sqlite/lib/pkgconfig:/usr/local/opt/libffi/lib/pkgconfig"
+
+
+#
+# Colorized CAT!
+#
+
+alias ccat='pygmentize -g'
+
+#
+# gitignore.io
+#
+
+function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
+
+#
+# .direnv
+#
+
+# Enable the direnv hook
+eval "$(direnv hook zsh)"
+
+#
+# Pyenv 
+#
+
+# Work-around to: https://github.com/pyenv/pyenv/issues/688git
+export GIT_INTERNAL_GETTEXT_TEST_FALLBACKS=1
+
+# PYENV_ROOT must be declared and exported before the invocation of pyenv-init
+export PYENV_ROOT="/Users/michael/.pyenv"
+
+# Enable pyenv
+if which pyenv-init > /dev/null; then 
+  eval "$(pyenv init -)"
+fi
+
+# Enable pyenv virtualenv
+if which pyenv-virtualenv-init > /dev/null; then 
+  eval "$(pyenv virtualenv-init -)"; 
+fi
+
+#
+# Pipenv
+#
+
+alias prp="pipenv run python"
+
+# Enable pipenv completion
+eval "$(pipenv --completion)"
+
+export PIPENV_IGNORE_VIRTUALENVS=1
+
+#
+# MongoDB
+#
+
+#export MONGO_PATH=/usr/local/mongodb
+export MONGO_PATH=/usr/local/opt/mongodb
+export PATH=$MONGO_PATH/bin:$PATH
+
+#
+# Android 
+#
+
+## Note: Android NDK should be in the ndk-bundle subfolder of the ANDROID_SDK_ROOT
+##       so no longer need to instaLL the Android NDK separately! :)
+export ANDROID_SDK_HOME=/usr/local/share/android-sdk
+export PATH=$ANDROID_SDK_HOME/tools:$PATH
+export PATH=$ANDROID_SDK_HOME/tools/bin:$PATH
+export PATH=$ANDROID_SDK_HOME/platform-tools:$PATH
+export PATH=$ANDROID_SDK_HOME/emulator:$PATH
+
+export ANDROID_HOME=$ANDROID_SDK_HOME
+
+#
+# Flutter
+#
+
+export FLUTTER_SDK_HOME=/usr/local/opt/flutter
+
+export FLUTTER_PATH=/usr/local/opt/flutter
+export PATH=$FLUTTER_PATH/bin:$PATH
+
+#
+# Dart
+#
+
+export DART_SDK_HOME=/usr/local/opt/flutter/bin/cache/dart-sdk
+
+#
+# Java 
+#
+
+# This is the handy macOS 'java_home' tool - type /usr/libexec/java_home to return the default system JDK
+# Use it to set the JAVA_HOME env variable
+export JAVA_HOME=`/usr/libexec/java_home -v 11`
+# export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+
+#
+# Other Worthwhile Additions (see RealJenius -- https://realjenius.com/2017/08/28/prezto/)
+#
+
+# Go up two directories
+alias ...='cd ../..'
+
+# Go up three directories
+alias ....='cd ../../..'
+
+# Go up four directories
+alias .....='cd ../../../..'
+
+#
+# Add ssh keys from macos keychain to get around auto ssh login bug -- make sure that ssh in .zpreztorc is NOT active!!
+#
+
+# Output from ssh-add in on STDERR i.e. 2, so used "2>/dev/null" after the command
+# ssh-add -A 2>/dev/null
+# eval "$(ssh-agent -s)" >/dev/null
+
+#
+# Source user defined functions
+#
+
+source "$HOME/.config/zsh/functions"
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+#
+# SDKMAN -- THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+#
+
+export SDKMAN_DIR=/Users/michael/.sdkman
+[[ -s /Users/michael/.sdkman/bin/sdkman-init.sh ]] && source /Users/michael/.sdkman/bin/sdkman-init.sh
